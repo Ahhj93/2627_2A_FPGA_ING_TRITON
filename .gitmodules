@@ -1,0 +1,3 @@
+[submodule "ENSEA_2A_FPGA_Public"]
+	path = ENSEA_2A_FPGA_Public
+	url = https://github.com/lfiack/ENSEA_2A_FPGA_Public
