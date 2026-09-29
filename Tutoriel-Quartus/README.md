@@ -46,3 +46,42 @@ Nous les configurations alors dans `Assignments > Pin Planner` après avoir doub
 ![Configuration des broches](/Tutoriel-Quartus/img/pin_planner.png)
 
 ## Compilation et programmation de la carte
+Nous compilons l'entièreté du projet en double cliquant sur `Compile Design`. Une fois compilé, nous allons sur l'outil de programmation du FPGA en allant dans `Tools > Programmer`. 
+
+Le bouton `Auto Detect` est grisé, il faut donc cliquer sur `Hardware Setup` et choisir le bon _hardware_, nous c'était le `DE-SoC [USB-1]`. Ensuite, nous cliquons sur `Auto Detect`, puis un pop-up s'affiche et nous choisissons `5CSEBA6`. 
+
+Ensuite nous chargons le bitstream en faisant clic-droit sur la puce `> Edit > Change File` et en Sélectionnant le fichier `.sof` dans le dossier `output_files`. 
+
+Nous cochons la case `Program/Configure`.
+
+![Programmation de la carte](/Tutoriel-Quartus/img/programmer2.png)
+
+Enfin nous programmons la carte en appuyant sur `Start`.
+
+### Ça fonctionne ?
+Oui, cela fonctionne mais la LED est allumée lorsque le bouton poussoir est relâché et s'éteint lorsqu'il est enfoncé or c'est l'inverse que nous souhaitons.
+
+| ![Comportement de la LED avec le bouton relâché](/Tutoriel-Quartus/img/card1.jpeg) | ![Comportement de la LED avec le bouton enfoncé](/Tutoriel-Quartus/img/card2.jpeg) | 
+|:---:|:---:|
+| Comportement de la LED avec le bouton relâché | Comportement de la LED avec le bouton enfoncé |
+
+### Le comportement est inversé! La LED est allumée par défaut et s'éteind lorsque l'on appuie sur l'encodeur. On voulait l'inverse. Modifiez le VHDL, compilez, programmez.
+
+Ici, la sortie dépend uniquement de l'entrée c'est-à-dire de l'état du bouton poussoir, ainsi nous pouvons inverser le comportement de la LED en utilisant une porte logique `NOT`. Le code VHDL devient alors :
+
+```vhdl
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity tuto_fpga is
+    port (
+        pushl : in std_logic;
+        led0 : out std_logic
+    );
+end entity tuto_fpga;
+
+architecture rtl of tuto_fpga is
+begin
+    led0 <= NOT pushl;
+end architecture rtl;
+```

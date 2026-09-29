@@ -10,5 +10,5 @@ end entity tuto_fpga;
 
 architecture rtl of tuto_fpga is
 begin
-    led0 <= pushl;
+    led0 <= NOT pushl;
 end architecture rtl;
