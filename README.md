@@ -4,7 +4,7 @@ Ces travaux ont été réalisé dans le cadre des travaux pratiques de FPGA du s
 
 ## Architecture du projet
 2627_2A_FPGA_ING_TRITON  
-├───[ENSEA_2A_FPGA_Public (submodule)](ENSEA_2A_FPGA_Public)  
+├───ENSEA_2A_FPGA_Public (submodule)  
 ├───[Ecran-Magique](Ecran-Magique)  
 └───[Tutoriel-Quartus](Tutoriel-Quartus)
 
