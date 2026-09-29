@@ -8,7 +8,6 @@ Ces travaux ont été réalisé dans le cadre des travaux pratiques de FPGA du s
 ├───[Ecran-Magique](Ecran-Magique)  
 └───[Tutoriel-Quartus](Tutoriel-Quartus)
 
-
 ## Membres du projet
 | ![](https://github.com/TritonKylian.png) | ![](https://github.com/Ahhj93.png) | 
 |:---:|:---:|
