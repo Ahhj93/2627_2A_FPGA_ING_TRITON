@@ -1,7 +1,7 @@
 # TP1 : Tutoriel Quartus
 Le TP1 a pour objectif de se familiariser avec Quartus et le langage VHDL en concevant, compilant et programmant des circuits simples sur une carte FPGA.
 
-En TD, nous avons utilisé le logiciel Modelsim pour simuler vos composants VHDL. Pour les tester sur FPGA, nous aurons besoin du logiciel Quartus Prime.
+En TD, nous avons utilisé le logiciel Modelsim pour simuler vos composants VHDL. Pour les tester sur FPGA, nous aurons besoin du logiciel Quartus Prime Lite.
 
 ## Branchement de la carte
 Pour fonctionner, la carte doit être alimentée. Le courant fourni par le port USB n'est pas suffisant, il faut ajouter une alimentation extérieure.
@@ -33,7 +33,7 @@ begin
 end architecture rtl;
 ```
 
-Ce composant simple permet d'allumer la LED0 lorsque le bouton poussoir de l'encodeur de gauche est enfoncé.
+Ce composant simple permet d'allumer la `LED0` lorsque le bouton poussoir de l'encodeur de gauche est enfoncé.
 
 ## Fichier de contraintes
 * `LED0` est sur la broche `PIN_AG28`
@@ -50,7 +50,7 @@ Nous compilons l'entièreté du projet en double cliquant sur `Compile Design`. 
 
 Le bouton `Auto Detect` est grisé, il faut donc cliquer sur `Hardware Setup` et choisir le bon _hardware_, nous c'était le `DE-SoC [USB-1]`. Ensuite, nous cliquons sur `Auto Detect`, puis un pop-up s'affiche et nous choisissons `5CSEBA6`. 
 
-Ensuite nous chargons le bitstream en faisant clic-droit sur la puce `> Edit > Change File` et en Sélectionnant le fichier `.sof` dans le dossier `output_files`. 
+Ensuite nous chargons le bitstream en faisant clic-droit sur la puce `Edit > Change File` et en sélectionnant le fichier `.sof` dans le dossier `output_files`. 
 
 Nous cochons la case `Program/Configure`.
 
@@ -128,15 +128,15 @@ end architecture rtl;
 
 Nous mettons cet entité en `Top-Level Entity`.
 
-![Configuration du top-level entity](img/top_level_entity.png)
+![Configuration du top-level entity](/Tutoriel-Quartus/img/top_level_entity.png)
 
 ### Tracez le schéma correspondant à ce code VHDL
-![Schéma correspondant au code VHDL ci-dessus](img/vhdl_circuit.jpeg)
+![Schéma correspondant au code VHDL ci-dessus](/Tutoriel-Quartus/img/vhdl_circuit.jpeg)
 
 ### Comparez avec le schéma proposé par Quartus
 Dans la zone de compilation, nous ouvrons `Compile Design > Analysis & Synthesis > Netlist Viewers` puis lançons `RTL Viewer`.
 
-![Schéma proposé par Quartus](img/vhdl_circuit_quartus.png)
+![Schéma proposé par Quartus](/Tutoriel-Quartus/img/vhdl_circuit_quartus.png)
 
 Sur le `SCLR`, il y a un zéro, ce qui signifie qu'il est désactivé. Le rond sur le D indique le NOT, ainsi les deux schémas semblent être équivalent.
 
@@ -201,15 +201,15 @@ Comme l’horloge à une fréquence de 50MHz si nous rajoutons un `counter` sur 
 
 Nous configurons les broches :
 
-![Configuration des broches](img/pin_planner2.png)
+![Configuration des broches](/Tutoriel-Quartus/img/pin_planner2.png)
 
 Nous avons donc bien la LED qui clignote :
 
-![Clignotement de la LED](img/led_blink.gif)
+![Clignotement de la LED](/Tutoriel-Quartus/img/led_blink.gif)
 
 ### Proposez un schéma correspondant au nouveau code. Vérifiez à l’aide de RTL Viewer.
 
-![Schéma proposé par Quartus](img/vhdl_circuit_quartus2.png)
+![Schéma proposé par Quartus](/Tutoriel-Quartus/img/vhdl_circuit_quartus2.png)
 
 ### Que sigifie `_n` dans `i_rst_n` ? Pourquoi ?
 Le `_n` dans `i_rst_n` signifie que le signal est actif à l’état `'0'` bas. Cela signifie que la réinitialisation s'effectue lorsque le signal est au niveau logique `'0'` et non pas à `'1'`. Par exemple, les boutons poussoirs sont câblés de sorte à renvoyer un `'1'` lorsqu'ils ne sont pas appuyés. C'est ce qui explique le comportement inversé du tout premier code, la LED s'éteignait lorsqu'on appuyait sur le bouton.
