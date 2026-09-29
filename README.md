@@ -5,9 +5,8 @@ Ces travaux ont été réalisé dans le cadre des travaux pratiques de FPGA du s
 
 
 ## Membres du projet
-|   |   |
-|:---:|:---:|
 | ![](https://github.com/TritonKylian.png) | ![](https://github.com/Ahhj93.png) | 
-| [**@TritonKylian**](https://github.com/TritonKylian)<br>TRITON Kylian| [**@Ahhj93**](https://github.com/Ahhj93)<br>ING Bryan-Sowanna |
+|:---:|:---:|
+| [**@TritonKylian**](https://github.com/TritonKylian)<br>TRITON Kylian | [**@Ahhj93**](https://github.com/Ahhj93)<br>ING Bryan-Sowanna |
 
 
