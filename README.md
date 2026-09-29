@@ -1,7 +1,8 @@
 # 2627_2A_FPGA_ING_TRITON
 
-# 2627_FPGA_S7_TP
-Travaux pratiques de FPGA du semestre 7
+Ces travaux ont été réalisé dans le cadre des travaux pratiques de FPGA du semestre 7 de l'ENSEA.
+
+
 
 ## Membres du projet
 | ![](https://github.com/TritonKylian.png) | ![](https://github.com/Ahhj93.png) | 
