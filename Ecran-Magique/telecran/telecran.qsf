@@ -1,0 +1,173 @@
+#============================================================
+# Build by Terasic V1.0.0
+#============================================================
+
+
+set_global_assignment -name FAMILY "Cyclone V"
+set_global_assignment -name DEVICE 5CSEBA6U23I7
+set_global_assignment -name TOP_LEVEL_ENTITY "telecran"
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION 14.0
+set_global_assignment -name LAST_QUARTUS_VERSION "24.1std.0 Lite Edition"
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "TUE MAR  3 15:11:40 2015"
+set_global_assignment -name DEVICE_FILTER_PACKAGE UFBGA
+
+
+#============================================================
+# FPGA
+#============================================================
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to i_clk_50
+#============================================================
+# HDMI
+#============================================================
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to io_hdmi_i2c_scl
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to io_hdmi_i2c_sda
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_clk
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[8]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[9]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[10]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[11]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[12]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[13]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[14]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[15]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[16]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[17]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[18]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[19]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[20]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[21]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[22]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_d[23]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_de
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_hs
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to i_hdmi_tx_int
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_hdmi_tx_vs
+#============================================================
+# KEY
+#============================================================
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to i_rst_n
+#============================================================
+# End of pin assignments by Terasic System Builder
+#============================================================
+set_global_assignment -name CYCLONEII_RESERVE_NCEO_AFTER_CONFIGURATION "USE AS REGULAR IO"
+set_location_assignment PIN_V11 -to i_clk_50
+set_location_assignment PIN_U10 -to io_hdmi_i2c_scl
+set_location_assignment PIN_AA4 -to io_hdmi_i2c_sda
+set_location_assignment PIN_AG5 -to o_hdmi_tx_clk
+set_location_assignment PIN_AD12 -to o_hdmi_tx_d[0]
+set_location_assignment PIN_AE12 -to o_hdmi_tx_d[1]
+set_location_assignment PIN_W8 -to o_hdmi_tx_d[2]
+set_location_assignment PIN_Y8 -to o_hdmi_tx_d[3]
+set_location_assignment PIN_AD11 -to o_hdmi_tx_d[4]
+set_location_assignment PIN_AD10 -to o_hdmi_tx_d[5]
+set_location_assignment PIN_AE11 -to o_hdmi_tx_d[6]
+set_location_assignment PIN_Y5 -to o_hdmi_tx_d[7]
+set_location_assignment PIN_AF10 -to o_hdmi_tx_d[8]
+set_location_assignment PIN_Y4 -to o_hdmi_tx_d[9]
+set_location_assignment PIN_AE9 -to o_hdmi_tx_d[10]
+set_location_assignment PIN_AB4 -to o_hdmi_tx_d[11]
+set_location_assignment PIN_AE7 -to o_hdmi_tx_d[12]
+set_location_assignment PIN_AF6 -to o_hdmi_tx_d[13]
+set_location_assignment PIN_AF8 -to o_hdmi_tx_d[14]
+set_location_assignment PIN_AF5 -to o_hdmi_tx_d[15]
+set_location_assignment PIN_AE4 -to o_hdmi_tx_d[16]
+set_location_assignment PIN_AH2 -to o_hdmi_tx_d[17]
+set_location_assignment PIN_AH4 -to o_hdmi_tx_d[18]
+set_location_assignment PIN_AH5 -to o_hdmi_tx_d[19]
+set_location_assignment PIN_AH6 -to o_hdmi_tx_d[20]
+set_location_assignment PIN_AG6 -to o_hdmi_tx_d[21]
+set_location_assignment PIN_AF9 -to o_hdmi_tx_d[22]
+set_location_assignment PIN_AE8 -to o_hdmi_tx_d[23]
+set_location_assignment PIN_AD19 -to o_hdmi_tx_de
+set_location_assignment PIN_T8 -to o_hdmi_tx_hs
+set_location_assignment PIN_AF11 -to i_hdmi_tx_int
+set_location_assignment PIN_V13 -to o_hdmi_tx_vs
+set_location_assignment PIN_AH17 -to i_rst_n
+
+
+#============================================================
+
+
+
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP "-40"
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 100
+set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
+set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name DEVICE_FILTER_PIN_COUNT 672
+set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "2.5 V"
+
+set_global_assignment -name TIMING_ANALYZER_MULTICORNER_ANALYSIS ON
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
+set_global_assignment -name VHDL_FILE telecran.vhd
+set_global_assignment -name VHDL_FILE dpram.vhd
+set_global_assignment -name VERILOG_FILE i2c/I2C_HDMI_Config.v
+set_global_assignment -name VERILOG_FILE i2c/I2C_Controller.v
+set_global_assignment -name VERILOG_FILE i2c/I2C_WRITE_WDATA.v
+set_global_assignment -name QIP_FILE pll/sys_pll.qip
+set_global_assignment -name QIP_FILE pll/pll_reconfig.qip
+set_global_assignment -name QIP_FILE pll/pll.qip
+set_location_assignment PIN_AF27 -to i_left_ch_a
+set_location_assignment PIN_AF28 -to i_left_ch_b
+set_location_assignment PIN_AA26 -to i_right_ch_a
+set_location_assignment PIN_AA13 -to i_right_ch_b
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to i_left_ch_a
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to i_left_ch_b
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to i_right_ch_a
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to i_left_pb
+set_location_assignment PIN_AH27 -to i_left_pb
+set_location_assignment PIN_AA11 -to i_right_pb
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to i_right_pb
+
+
+
+set_location_assignment PIN_W15 -to o_de10_leds[7]
+set_location_assignment PIN_AA24 -to o_de10_leds[6]
+set_location_assignment PIN_V16 -to o_de10_leds[5]
+set_location_assignment PIN_V15 -to o_de10_leds[4]
+set_location_assignment PIN_AF26 -to o_de10_leds[3]
+set_location_assignment PIN_AE26 -to o_de10_leds[2]
+set_location_assignment PIN_Y16 -to o_de10_leds[1]
+set_location_assignment PIN_AA23 -to o_de10_leds[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_de10_leds[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_de10_leds[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_de10_leds[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_de10_leds[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_de10_leds[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_de10_leds[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_de10_leds[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_de10_leds[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_de10_leds
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to i_right_ch_b
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_leds[9]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_leds[8]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_leds[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_leds[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_leds[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_leds[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_leds[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_leds[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_leds[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_leds[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_leds
+set_location_assignment PIN_AG28 -to o_leds[0]
+set_location_assignment PIN_AE25 -to o_leds[1]
+set_location_assignment PIN_AG26 -to o_leds[2]
+set_location_assignment PIN_AG25 -to o_leds[3]
+set_location_assignment PIN_AG23 -to o_leds[4]
+set_location_assignment PIN_AH21 -to o_leds[5]
+set_location_assignment PIN_AF22 -to o_leds[6]
+set_location_assignment PIN_AG20 -to o_leds[7]
+set_location_assignment PIN_AG18 -to o_leds[8]
+set_location_assignment PIN_AG15 -to o_leds[9]
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
