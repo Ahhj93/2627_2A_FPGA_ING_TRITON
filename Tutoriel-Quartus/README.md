@@ -275,3 +275,6 @@ Nous configurons aussi les bonnes broches sur `o_led` :
 Nous obtenons alors le chenillard suivant :
 
 ![Chenillard](img/chenillard.gif)
+
+## Conclusion
+Le TP1 nous a permis de nous familiariser avec Quartus et le langage VHDL. Nous avons appris à créer un projet, à créer un fichier VHDL, à configurer les broches, à compiler et programmer la carte FPGA. Nous avons également appris à faire clignoter une LED et à créer un chenillard.
