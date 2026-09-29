@@ -85,3 +85,114 @@ begin
     led0 <= NOT pushl;
 end architecture rtl;
 ```
+
+| ![Comportement de la LED avec le bouton relâché](/Tutoriel-Quartus/img/card3.jpeg) | ![Comportement de la LED avec le bouton enfoncé](/Tutoriel-Quartus/img/card4.jpeg) | 
+|:---:|:---:|
+| Comportement de la LED avec le bouton relâché | Comportement de la LED avec le bouton enfoncé |
+
+## Faire clignoter une LED
+### Plusieurs horloges sont disponibles sur la carte. Sur quelle broche est connectée l’horloge nommée `FPGA_CLK1_50` ?
+
+![Affectation des broches des entrées d'horloge](/Tutoriel-Quartus/img/pin_assignment_clock_inputs.png)
+
+L'horloge `FPGA_CLK1_50` est connectée à la broche `PIN\_V11`.
+
+Le code VHDL ci-dessous permet de faire simplement clignoter une LED.
+
+```vhdl
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity led_blink is
+    port (
+        i_clk : in std_logic;
+        i_rst_n : in std_logic;
+        o_led : out std_logic
+    );
+end entity led_blink;
+
+architecture rtl of led_blink is
+    signal r_led : std_logic := '0';
+begin
+    process(i_clk, i_rst_n)
+    begin
+        if (i_rst_n = '0') then
+            r_led <= '0';
+        elsif (rising_edge(i_clk)) then
+            r_led <= not r_led;
+        end if;
+    end process;
+    o_led <= r_led;
+end architecture rtl;
+```
+
+Nous mettons cet entité en `Top-Level Entity`.
+![Configuration du top-level entity](/Tutoriel-Quartus/img/top_level_entity.png)
+
+### Tracez le schéma correspondant à ce code VHDL
+![Schéma correspondant au code VHDL ci-dessus](/Tutoriel-Quartus/img/vhdl_circuit.jpeg)
+
+### Comparez avec le schéma proposé par Quartus
+Dans la zone de compilation, nous ouvrons `Compile Design > Analysis & Synthesis > Netlist Viewers` puis lançons `RTL Viewer`.
+![Schéma proposé par Quartus](/Tutoriel-Quartus/img/vhdl_circuit_quartus.png)
+
+Sur le `SCLR`, il y a un zéro, ce qui signifie qu'il est désactivé. Le rond sur le D indique le NOT, ainsi les deux schémas semblent être équivalent.
+
+Ce n’est pas la peine de tester ce code sur la carte, la LED clignote à 50MHz : c’est trop rapide.
+
+### En vous aidant du code ci-dessous, modifiez votre code pour réduire la fréquence :
+```vhdl
+process(i_clk, i_rst_n)
+    variable counter : natural range 0 to 5000000 := 0;
+begin
+    if (i_rst_n = '0') then
+        counter := 0;
+        r_led_enable <= '0';
+    elsif (rising_edge(i_clk)) then
+        if (counter = 5000000) then
+            counter := 0;
+            r_led_enable <= '1';
+        else
+            counter := counter + 1;
+            r_led_enable <= '0';
+        end if;
+    end if;
+end process;
+```
+
+Nous modifions alors le code principal :
+```vhdl
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity led_blink is
+    port (
+        i_clk : in std_logic;
+        i_rst_n : in std_logic;
+        o_led : out std_logic
+    );
+end entity led_blink;
+
+architecture rtl of led_blink is
+    signal r_led : std_logic := '0';
+begin
+    process(i_clk, i_rst_n)
+        variable counter : natural range 0 to 5000000 := 0;
+    begin
+        if (i_rst_n = '0') then
+            counter := 0;
+            r_led <= '0';
+        elsif (rising_edge(i_clk)) then
+            if (counter = 5000000) then
+                counter := 0;
+                r_led <= NOT r_led ;
+            else
+                counter := counter + 1;
+            end if;
+        end if;
+    end process;
+    o_led <= r_led;
+end architecture rtl;
+```
+
+Comme l’horloge à une fréquence de 50MHz si nous rajoutons un `counter` sur l'horloge ici de 5 millions alors nous nous rabaissons à une fréquence de 10Hz puisque nous comptons jusqu'à 5 millions puis nous changeons l'état de la LED et $\frac{50\cdot10^6}{5\cdot10^6}=10$. Un cycle complet allumé-éteint dure deux bascules. Le clignotement est donc d’environ 5Hz.
