@@ -56,7 +56,7 @@ Nous cochons la case `Program/Configure`.
 
 ![Programmation de la carte](img/programmer2.png)
 
-Enfin nous programmons la carte en appuyant sur `Start`.
+Enfin, nous programmons la carte en appuyant sur `Start`.
 
 ### Ça fonctionne ?
 Oui, cela fonctionne mais la LED est allumée lorsque le bouton poussoir est relâché et s'éteint lorsqu'il est enfoncé or c'est l'inverse que nous souhaitons.
@@ -128,15 +128,15 @@ end architecture rtl;
 
 Nous mettons cet entité en `Top-Level Entity`.
 
-![Configuration du top-level entity](/Tutoriel-Quartus/img/top_level_entity.png)
+![Configuration du top-level entity](img/top_level_entity.png)
 
 ### Tracez le schéma correspondant à ce code VHDL
-![Schéma correspondant au code VHDL ci-dessus](/Tutoriel-Quartus/img/vhdl_circuit.jpeg)
+![Schéma correspondant au code VHDL ci-dessus](img/vhdl_circuit.jpeg)
 
 ### Comparez avec le schéma proposé par Quartus
 Dans la zone de compilation, nous ouvrons `Compile Design > Analysis & Synthesis > Netlist Viewers` puis lançons `RTL Viewer`.
 
-![Schéma proposé par Quartus](/Tutoriel-Quartus/img/vhdl_circuit_quartus.png)
+![Schéma proposé par Quartus](img/vhdl_circuit_quartus.png)
 
 Sur le `SCLR`, il y a un zéro, ce qui signifie qu'il est désactivé. Le rond sur le D indique le NOT, ainsi les deux schémas semblent être équivalent.
 
@@ -197,22 +197,22 @@ begin
 end architecture rtl;
 ```
 
-Comme l’horloge à une fréquence de 50MHz si nous rajoutons un `counter` sur l'horloge ici de 5 millions alors nous nous rabaissons à une fréquence de 10Hz puisque nous comptons jusqu'à 5 millions puis nous changeons l'état de la LED et $\frac{50\cdot10^6}{5\cdot10^6}=10$. Un cycle complet allumé-éteint dure deux bascules. Le clignotement est donc d’environ 5Hz.
+Comme l’horloge à une fréquence de 50MHz si nous rajoutons un `counter` sur l'horloge ici de 5 millions alors nous nous rabaissons à une fréquence de 10Hz puisque nous comptons jusqu'à 5 millions puis nous changeons l'état de la LED et $\frac{50\cdot10^6}{5\cdot10^6}=10$ Hz. Un cycle complet allumé-éteint dure deux bascules. Le clignotement est donc d’environ 5Hz.
 
 Nous configurons les broches :
 
-![Configuration des broches](/Tutoriel-Quartus/img/pin_planner2.png)
+![Configuration des broches](img/pin_planner2.png)
 
 Nous avons donc bien la LED qui clignote :
 
-![Clignotement de la LED](/Tutoriel-Quartus/img/led_blink.gif)
+![Clignotement de la LED](img/led_blink.gif)
 
 ### Proposez un schéma correspondant au nouveau code. Vérifiez à l’aide de RTL Viewer.
 
-![Schéma proposé par Quartus](/Tutoriel-Quartus/img/vhdl_circuit_quartus2.png)
+![Schéma proposé par Quartus](img/vhdl_circuit_quartus2.png)
 
 ### Que sigifie `_n` dans `i_rst_n` ? Pourquoi ?
-Le `_n` dans `i_rst_n` signifie que le signal est actif à l’état `'0'` bas. Cela signifie que la réinitialisation s'effectue lorsque le signal est au niveau logique `'0'` et non pas à `'1'`. Par exemple, les boutons poussoirs sont câblés de sorte à renvoyer un `'1'` lorsqu'ils ne sont pas appuyés. C'est ce qui explique le comportement inversé du tout premier code, la LED s'éteignait lorsqu'on appuyait sur le bouton.
+Le `_n` dans `i_rst_n` est une convention quisignifie que le signal est actif à l’état `'0'` bas. Cela signifie que la réinitialisation s'effectue lorsque le signal est au niveau logique `'0'` et non pas à `'1'`. Par exemple, les boutons poussoirs sont configurés de sorte à renvoyer un `'1'` lorsqu'ils ne sont pas appuyés. C'est ce qui explique le comportement inversé du tout premier code. Pour rappel, la LED s'éteignait lorsqu'on appuyait sur le bouton.
 
 ## Chenillard !
 ### Eh oui, vous vous en doutiez, ça devait arriver à un moment ou à un autre. Vous plongez maintenant dans le grand bain, vous allez devoir concevoir votre propre composant. Sans aide, sans guidage. À vous de jouer :
@@ -229,7 +229,7 @@ entity chenillard is
 end entity chenillard;
 
 architecture rtl of chenillard is
-    signal r_led : std_logic_vector(9 downto 0) := "0000000001";
+    signal r_led : std_logic_vector(9 downto 0) := "0000000001"; --LSB coded
 begin
     process(i_clk, i_rst_n)
         variable counter : natural range 0 to 5000000 := 0;
@@ -250,7 +250,7 @@ begin
 end architecture rtl;
 ```
 
-`o_led` est un `std_logic_vector(9 downto 0)` car nous voulons utiliser 10 leds.
+`o_led` est un bus `std_logic_vector(9 downto 0)` car nous voulons utiliser 10 leds.
 
 La ligne `signal r_led : std_logic_vector(9 downto 0) := "0000000001";` permet d'allumer la première led.
 
@@ -268,6 +268,8 @@ Le fonctionnement du chenillard repose sur la ligne `r_led <= r_led(8 downto 0) 
 * "0000000001"
 * etc.
 
+Puisque nous avons 10 LED et que chaque LEDs clignote avec une fréquence de 10Hz, le chenillard va avoir une fréquence de 1Hz. Donc, les 10 LEDs seront parcourues en 1 secondes.
+
 Nous configurons aussi les bonnes broches sur `o_led` :
 
 ![Configuration des broches](img/pin_planner3.png)
@@ -277,4 +279,4 @@ Nous obtenons alors le chenillard suivant :
 ![Chenillard](img/chenillard.gif)
 
 ## Conclusion
-Le TP1 nous a permis de nous familiariser avec Quartus et le langage VHDL. Nous avons appris à créer un projet, à créer un fichier VHDL, à configurer les broches, à compiler et programmer la carte FPGA. Nous avons également appris à faire clignoter une LED et à créer un chenillard.
+Le TP1 nous a permis de nous familiariser avec Quartus et le langage VHDL. Nous avons appris à créer un projet, à créer un fichier VHDL, à configurer les broches, à compiler et programmer la carte FPGA. Nous avons également appris à faire clignoter une LED et construire un chenillard.
