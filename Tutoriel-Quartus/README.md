@@ -271,3 +271,7 @@ Le fonctionnement du chenillard repose sur la ligne `r_led <= r_led(8 downto 0) 
 Nous configurons aussi les bonnes broches sur `o_led` :
 
 ![Configuration des broches](/Tutoriel-Quartus/img/pin_planner3.png)
+
+Nous obtenons alors le chenillard suivant :
+
+![Chenillard](/Tutoriel-Quartus/img/chenillard.gif)
