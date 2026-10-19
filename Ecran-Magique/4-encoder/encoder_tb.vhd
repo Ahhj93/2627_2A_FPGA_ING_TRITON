@@ -29,7 +29,7 @@ begin
     -- Instanciation du composant
     uut: entity work.encoder
         generic map (
-            PERIOD => PERIOD_S_EN,  
+            PERIOD_S_EN => PERIOD_S_EN,  
             WIDTH  => WIDTH
         )
         port map (
