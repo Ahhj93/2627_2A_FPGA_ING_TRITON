@@ -57,11 +57,38 @@ architecture rtl of telecran is
 		);
 	end component;
 
+	component hdmi_controler
+		generic (
+			h_res 	: positive := 720;
+			v_res 	: positive := 480;
+			h_sync	: positive := 61;
+			h_fp	: positive := 58;
+			h_bp	: positive := 18;
+			v_sync	: positive := 5;
+			v_fp	: positive := 30;
+			v_bp	: positive := 9
+		);
+		port (
+			i_clk  		: in std_logic;
+			i_rst_n 	: in std_logic;
+			o_hdmi_hs   : out std_logic;
+			o_hdmi_vs   : out std_logic;
+			o_hdmi_de   : out std_logic;
+			o_pixel_en : out std_logic;
+			o_pixel_address : out natural range 0 to (h_res * v_res - 1);
+			o_x_counter : out natural range 0 to (h_res - 1);
+			o_y_counter : out natural range 0 to (v_res - 1)
+		);
+	end component;
+
     constant h_res : natural := 720;
     constant v_res : natural := 480;
 
 	signal s_clk_27 : std_logic;
 	signal s_rst_n : std_logic;	-- holds reset as long as pll is not locked
+
+	signal s_x_counter : natural range 0 to (h_res - 1);
+	signal s_y_counter : natural range 0 to (v_res - 1);
 begin
 	o_leds <= (others => '0');
 	o_de10_leds <= (others => '0');
@@ -84,4 +111,31 @@ begin
 			I2C_SDAT => io_hdmi_i2c_sda,
 			HDMI_TX_INT => i_hdmi_tx_int
 	 );
+
+	-- Generates HDMI sync signals and pixel coordinates (480p)
+	hdmi_controler0 : component hdmi_controler
+		generic map (
+			h_res => h_res,
+			v_res => v_res
+		)
+		port map (
+			i_clk => s_clk_27,
+			i_rst_n => s_rst_n,
+			o_hdmi_hs => o_hdmi_tx_hs,
+			o_hdmi_vs => o_hdmi_tx_vs,
+			o_hdmi_de => o_hdmi_tx_de,
+			o_pixel_en => open,
+			o_pixel_address => open,
+			o_x_counter => s_x_counter,
+			o_y_counter => s_y_counter
+		);
+
+	o_hdmi_tx_clk <= s_clk_27;
+
+	-- Pixel colors
+	o_hdmi_tx_d(23 downto 16) <= std_logic_vector(to_unsigned(s_x_counter, 8));
+	o_hdmi_tx_d(15 downto 8) <= std_logic_vector(to_unsigned(s_y_counter, 8));
+	o_hdmi_tx_d(7 downto 0) <= (others => '0');
+	--o_hdmi_tx_d(15 downto 8) <= (others => '0');
+	--o_hdmi_tx_d(7 downto 0) <= std_logic_vector(to_unsigned(s_y_counter, 8));
 end architecture rtl;
