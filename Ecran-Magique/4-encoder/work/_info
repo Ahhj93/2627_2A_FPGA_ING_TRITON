@@ -1,0 +1,94 @@
+m255
+K4
+z2
+!s11e MIXED_VERSIONS
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dE:/2627_2A_FPGA_ING_TRITON/ecran-Magique/4-encoder
+Eencoder
+Z1 w1792398327
+Z2 DPx4 ieee 11 numeric_std 0 22 aU^R8eGcicLcUFIaBQSL>3
+Z3 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z4 DPx4 ieee 14 std_logic_1164 0 22 cVAk:aDinOX8^VGI1ekP<3
+!i122 7
+R0
+Z5 8encoder.vhd
+Z6 Fencoder.vhd
+l0
+L5 1
+VRX7X`;^N9iOLDchZFW:Fe2
+!s100 c3z7]UzFMSP7PmCmD>j8L2
+Z7 OV;C;2020.1;71
+32
+Z8 !s110 1792398340
+!i10b 1
+Z9 !s108 1792398340.000000
+Z10 !s90 -reportprogress|300|encoder.vhd|
+Z11 !s107 encoder.vhd|
+!i113 1
+Z12 tExplicit 1 CvgOpt 0
+Artl
+R2
+R3
+R4
+Z13 DEx4 work 7 encoder 0 22 RX7X`;^N9iOLDchZFW:Fe2
+!i122 7
+l37
+L20 83
+VYQ2YjFJP`;lb<KA2?_L]]1
+!s100 RmicEOKM8Q7`bm2c73DN?2
+R7
+32
+R8
+!i10b 1
+R9
+R10
+R11
+!i113 1
+R12
+Eencoder_tb
+Z14 w1792396122
+R2
+R3
+R4
+!i122 8
+R0
+Z15 8encoder_tb.vhd
+Z16 Fencoder_tb.vhd
+l0
+L5 1
+VQz_4aMMG:S29CR2SMTKk:2
+!s100 QKOo5V[CZ@6JBonMG?oM11
+R7
+32
+Z17 !s110 1792398341
+!i10b 1
+Z18 !s108 1792398341.000000
+Z19 !s90 -reportprogress|300|encoder_tb.vhd|
+Z20 !s107 encoder_tb.vhd|
+!i113 1
+R12
+Atb
+R13
+R2
+R3
+R4
+Z21 DEx4 work 10 encoder_tb 0 22 Qz_4aMMG:S29CR2SMTKk:2
+!i122 8
+l27
+Z22 L12 74
+Z23 Vd>91@NClo;oLSUUH2VEgQ3
+Z24 !s100 ZBIPoA>G1OE?dLNbz8C1Q1
+R7
+32
+R17
+!i10b 1
+R18
+R19
+R20
+!i113 1
+R12

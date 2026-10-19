@@ -1,1 +1,1 @@
-## Mini-Projet : Ecran Magique  
+## Mini-Projet : Ecran Magique

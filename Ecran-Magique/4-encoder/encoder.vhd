@@ -5,7 +5,8 @@ use ieee.numeric_std.all;
 entity encoder is
     generic (
         -- 5000000 @ 50 MHz = 100 ms
-        PERIOD_S_EN : natural := 5000000;
+        -- 500000 @ 50 MHz = 10 ms
+        PERIOD_S_EN : natural := 500000;
         WIDTH : natural := 10
     );
     port (
@@ -79,8 +80,8 @@ begin
     s_b_falling <= not r_b_cur and r_b_prev;
 
     -- Sens
-    s_clockwise    <= (s_a_rising and not r_b_cur) or (s_b_falling and r_a_cur);
-    s_cntclockwise <= (s_b_rising and not r_a_cur) or (s_a_falling and r_b_cur);
+    s_clockwise    <= (s_a_rising and not r_b_cur) or (s_a_falling and r_b_cur);
+    s_cntclockwise <= (s_b_rising and not r_a_cur) or (s_b_falling and r_a_cur);
 
     -- Compteur
     cnt_dcnt : process(i_clk, i_rst_n)
