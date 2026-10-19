@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 entity encoder is
     generic (
         -- 5000000 @ 50 MHz = 100 ms
-        PERIOD : natural := 5000000;
+        PERIOD_S_EN : natural := 5000000;
         WIDTH : natural := 10
     );
     port (
@@ -26,10 +26,8 @@ architecture rtl of encoder is
     signal r_b_prev : std_logic := '0';
 
     signal s_a_rising  : std_logic;
-    signal s_a_stable  : std_logic;
     signal s_a_falling : std_logic;
     signal s_b_rising  : std_logic;
-    signal s_b_stable  : std_logic;
     signal s_b_falling : std_logic;
 
     signal s_clockwise     : std_logic;
