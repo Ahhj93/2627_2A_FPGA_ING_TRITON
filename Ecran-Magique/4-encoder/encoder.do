@@ -23,7 +23,9 @@ add wave uut/r_a_prev
 add wave uut/r_b_cur
 add wave uut/r_b_prev
 add wave uut/s_a_rising
+add wave uut/s_a_falling
 add wave uut/s_b_rising
+add wave uut/s_b_falling
 add wave uut/s_clockwise
 add wave uut/s_cntclockwise
 add wave uut/r_cnt
