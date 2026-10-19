@@ -37,13 +37,13 @@ architecture rtl of encoder is
 begin
     -- Diviseur de fréquence pour avoir 100ms
     divider : process(i_clk, i_rst_n)
-        variable counter : natural range 0 to PERIOD-1 := 0;
+        variable counter : natural range 0 to PERIOD_S_EN-1 := 0;
     begin
         if (i_rst_n = '0') then
             counter := 0;
             s_en <= '0';
         elsif (rising_edge(i_clk)) then
-            if (counter = PERIOD-1) then
+            if (counter = PERIOD_S_EN-1) then
                 counter := 0;
                 s_en <= '1';
             else
