@@ -241,6 +241,18 @@ begin
 			o_q_b => s_ram_q_b
 		);
 
+	-- Pixel colors
+	--o_hdmi_tx_d(23 downto 16) <= std_logic_vector(to_unsigned(s_x_counter, 8));
+	--o_hdmi_tx_d(15 downto 8) <= std_logic_vector(to_unsigned(s_y_counter, 8));
+	--o_hdmi_tx_d(7 downto 0) <= (others => '0');
+	--o_hdmi_tx_d(15 downto 8) <= (others => '0');
+	--o_hdmi_tx_d(7 downto 0) <= std_logic_vector(to_unsigned(s_y_counter, 8));
+
+	-- Pixel colors: white point with encoder
+	--o_hdmi_tx_d <=
+	--	x"FFFFFF" when (to_integer(unsigned(s_x_pixel)) = s_x_counter and to_integer(unsigned(s_y_pixel)) = s_y_counter)
+	--	else x"000000";
+
 	o_hdmi_tx_d <= x"FFFFFF" when s_ram_q_b(0) = '1' else x"000000";
 	
 end architecture rtl;
