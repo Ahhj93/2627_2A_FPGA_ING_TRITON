@@ -437,7 +437,70 @@ Une mémoire "dual port" est une mémoire à laquelle on peut accéder  de deux 
 #### Schéma pour mémoiriser les pixels
 ![](img/Schema_memoirisation_pixels.jpg)
 #### Implémentation en VHDL
+```vhdl
+component dpram
+		generic
+		(
+			mem_size    : natural := 720 * 480;
+			data_width  : natural := 8
+		);
+		port
+		(
+			i_clk_a        : in std_logic;
+			i_clk_b        : in std_logic;
 
-
+			i_data_a    : in std_logic_vector(data_width-1 downto 0);
+			i_data_b    : in std_logic_vector(data_width-1 downto 0);
+			i_addr_a    : in natural range 0 to mem_size-1;
+			i_addr_b    : in natural range 0 to mem_size-1;
+			i_we_a      : in std_logic := '1';
+			i_we_b      : in std_logic := '1';
+			o_q_a       : out std_logic_vector(data_width-1 downto 0);
+			o_q_b       : out std_logic_vector(data_width-1 downto 0)
+		);
+	end component;
+```
+On ajoute un process `cursor_address` pour avoir une coordonnées unique pour la RAM.
+```vhdl
+cursor_address : process(s_x_pixel, s_y_pixel)
+		variable x : natural;
+		variable y : natural;
+	begin
+		x := to_integer(unsigned(s_x_pixel));
+		y := to_integer(unsigned(s_y_pixel));
+		if (x < h_res) and (y < v_res) then
+			s_cursor_address <= x + (y * h_res);
+			s_cursor_valid <= '1';
+		else
+			s_cursor_address <= 0;
+			s_cursor_valid <= '0';
+		end if;
+	end process cursor_address;
+```
+On ajoute un système de mémoire avec framebuffer, le port A va écrire Port A écrit 1 à l’adresse du stylet quand s_cursor_valid autorise l'écriture.
+Port B lit l’adresse du pixel que le contrôleur HDMI est en train d’afficher.
+``` vhdl
+framebuffer : component dpram
+		generic map (
+			mem_size => h_res * v_res,
+			data_width => 1
+		)
+		port map (
+			i_clk_a => s_clk_27,
+			i_clk_b => s_clk_27,
+			i_data_a => "1",
+			i_data_b => "0",
+			i_addr_a => s_cursor_address,
+			i_addr_b => s_pixel_address,
+			i_we_a => s_cursor_valid,
+			i_we_b => '0',
+			o_q_a => open,
+			o_q_b => s_ram_q_b
+		);
+```
+On change alors l'output pour afficher le pixel blanc si le bit de la RAM est à 1, sinon on affiche noir.
+``` vhdl
+o_hdmi_tx_d <= x"FFFFFF" when s_ram_q_b(0) = '1' else x"000000";
+```
 ### Effacement
 Comme Expliqué dans le TP le Il faut parcourir toutes les adresses de la RAM pour y écrire un zéro. Pour cela on utilise un compteur qui va de 0 à l'adresse finale. On utilise le signal de reset pour déclencher l'effacement. Quand le signal de reset est à 0, on initialise le compteur à 0 et on commence à écrire des zéros dans la RAM. Quand le compteur atteint la valeur maximale, on arrête l'effacement et on peut recommencer à dessiner.
