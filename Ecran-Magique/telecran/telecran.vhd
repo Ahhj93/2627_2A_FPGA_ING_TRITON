@@ -95,7 +95,7 @@ architecture rtl of telecran is
 		);
 	end component;
 
-	component dpram is
+	component dpram
 		generic
 		(
 			mem_size    : natural := 720 * 480;
@@ -115,7 +115,7 @@ architecture rtl of telecran is
 			o_q_a       : out std_logic_vector(data_width-1 downto 0);
 			o_q_b       : out std_logic_vector(data_width-1 downto 0)
 		);
-	end dpram;
+	end component;
 
 
 
