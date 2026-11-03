@@ -292,6 +292,59 @@ wave zoom full
 ![](img/encoder_tb.png)
 
 ##### Contrôleur HDMI
+###### Ajoutez le fichier ```hdmi_controler.vhd``` au projet.
+Nous ajoutons le fichier ```hdmi_controler.vhd``` au projet Quartus provenant du TD.
+
+###### Instanciez le composant ```hdmi_controler``` dans votre fichier top (```telecran.vhd```).
+Nous instancions le composant ```hdmi_controler``` dans le fichier top (```telecran.vhd```) en connectant les signaux d'horloge, de reset et de sortie HDMI.
+
+```vhdl
+	component hdmi_controler
+		generic (
+			h_res 	: positive := 720;
+			v_res 	: positive := 480;
+			h_sync	: positive := 61;
+			h_fp	: positive := 58;
+			h_bp	: positive := 18;
+			v_sync	: positive := 5;
+			v_fp	: positive := 30;
+			v_bp	: positive := 9
+		);
+		port (
+			i_clk  		: in std_logic;
+			i_rst_n 	: in std_logic;
+			o_hdmi_hs   : out std_logic;
+			o_hdmi_vs   : out std_logic;
+			o_hdmi_de   : out std_logic;
+			o_pixel_en : out std_logic;
+			o_pixel_address : out natural range 0 to (h_res * v_res - 1);
+			o_x_counter : out natural range 0 to (h_res - 1);
+			o_y_counter : out natural range 0 to (v_res - 1)
+		);
+	end component;
+```
+
+Puis nous connectons les signaux d'horloge et de reset, ainsi que les sorties du contrôleur HDMI aux signaux correspondants dans le top.
+
+```vhdl
+	-- Generates HDMI sync signals and pixel coordinates (480p)
+	hdmi_controler0 : component hdmi_controler
+		generic map (
+			h_res => h_res,
+			v_res => v_res
+		)
+		port map (
+			i_clk => s_clk_27,
+			i_rst_n => s_rst_n,
+			o_hdmi_hs => o_hdmi_tx_hs,
+			o_hdmi_vs => o_hdmi_tx_vs,
+			o_hdmi_de => o_hdmi_tx_de,
+			o_pixel_en => open,
+			o_pixel_address => open,
+			o_x_counter => s_x_counter,
+			o_y_counter => s_y_counter
+		);
+```
 
 ###### Connectez les sorties pixel (signal ```o_hdmi_tx_d```) aux compteurs x, y.
 Nous utilisons l'exemple de l'énoncé :
