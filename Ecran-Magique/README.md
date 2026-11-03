@@ -43,6 +43,12 @@ Pour connaître le sens de rotation, on applique cette structure aux deux voies 
 ![](img/decr.png)
 
 #### Implémentation de la solution en VHDL
+Le schéma suivant nous est proposé pour implémenter la solution en VHDL. Cette implémentation permet de mieux comprendre le fonctionnement de l'encodeur.
+
+![](img/encoder_circuit.png)
+
+Nous implémentons le composant `encoder` dans le fichier `encoder.vhd`. Il prend en entrée les deux voies A et B de l'encodeur, ainsi que l'horloge et le reset. Il fournit en sortie un vecteur de LED représentant la valeur du compteur.
+
 ```vhdl
 library ieee;
 use ieee.std_logic_1164.all;
@@ -150,6 +156,8 @@ end architecture rtl;
 ```
 
 ##### Simulation
+Nous simulons le composant `encoder` dans le fichier `encoder_tb.vhd`. Le testbench génère les signaux A et B de l'encodeur, ainsi que l'horloge et le reset. Il vérifie ensuite que la valeur du compteur est correcte en fonction des rotations de l'encodeur.
+
 ```vhdl
 library ieee;
 use ieee.std_logic_1164.all;
@@ -237,6 +245,8 @@ begin
 
 end architecture tb;
 ```
+
+Dans le simulateur, nous faisons en sorte d'afficher tous les signaux d'entrée et de sortie du composant `encoder`. Nous pouvons ainsi vérifier que le compteur s'incrémente et se décrémente correctement en fonction des rotations de l'encodeur.
 
 ```vhdl
 quit -sim
