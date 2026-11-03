@@ -292,7 +292,31 @@ wave zoom full
 ![](img/encoder_tb.png)
 
 ##### Contrôleur HDMI
+
+###### Connectez les sorties pixel (signal ```o_hdmi_tx_d```) aux compteurs x, y.
+Nous utilisons l'exemple de l'énoncé :
+```vhdl
+o_hdmi_tx_d(23 downto 16) <= std_logic_vector(to_unsigned(s_x_counter, 8));
+o_hdmi_tx_d(15 downto 8) <= std_logic_vector(to_unsigned(s_y_counter, 8));
+o_hdmi_tx_d(7 downto 0) <= (others => '0');
+```
+
+Nous obtenons alors :
+
+![](img/hdmi_test1.png)
+
+Nous testons ensuite avec un autre exemple :
+```vhdl
+o_hdmi_tx_d(23 downto 16) <= std_logic_vector(to_unsigned(s_x_counter, 8));
+o_hdmi_tx_d(15 downto 8) <= (others => '0');
+o_hdmi_tx_d(7 downto 0) <= std_logic_vector(to_unsigned(s_y_counter, 8));
+```
+
+![](img/hdmi_test2.png)
+
 ###### À quels bits correspondent chaque composante couleur ?
+Grâce à ces tests, nous pouvons identifier les bits correspondant à chaque composante couleur.
+
 Les bits de la sortie HDMI sont organisés comme suit :
 * bits 23 à 16 : composante rouge
 * bits 15 à 8 : composante verte
