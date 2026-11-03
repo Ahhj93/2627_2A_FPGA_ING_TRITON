@@ -431,3 +431,13 @@ begin
 		x"FFFFFF" when (to_integer(unsigned(s_x_pixel)) = s_x_counter and to_integer(unsigned(s_y_pixel)) = s_y_counter)
 	    else x"000000";
 ```
+### Mémorisation
+#### Qu'est ce qu'une mémoire *dual-port* ?
+Une mémoire "dual port" est une mémoire à laquelle on peut accéder  de deux manières indépendantes. Dans le projet, ce type de mémoire est utile pour faire des opérations simultanément pour écrire ou lire les données. Pour écrire les pixels dans la mémoire par les encodeurs et en même temps lire la mémoire pour récupérer l'état de chaque pixel et rafraîchir l'écran.
+#### Schéma pour mémoiriser les pixels
+![](img/Schema_memoirisation_pixels.jpg)
+#### Implémentation en VHDL
+
+
+### Effacement
+Comme Expliqué dans le TP le Il faut parcourir toutes les adresses de la RAM pour y écrire un zéro. Pour cela on utilise un compteur qui va de 0 à l'adresse finale. On utilise le signal de reset pour déclencher l'effacement. Quand le signal de reset est à 0, on initialise le compteur à 0 et on commence à écrire des zéros dans la RAM. Quand le compteur atteint la valeur maximale, on arrête l'effacement et on peut recommencer à dessiner.
