@@ -81,14 +81,34 @@ architecture rtl of telecran is
 		);
 	end component;
 
+	component encoder
+		generic (
+			PERIOD_S_EN : natural := 500000;
+			WIDTH : natural := 10
+		);
+		port (
+			i_clk   : in std_logic;
+			i_rst_n : in std_logic;
+			i_A     : in std_logic;
+			i_B     : in std_logic;
+			o_leds  : out std_logic_vector(WIDTH-1 downto 0)
+		);
+	end component;
+
     constant h_res : natural := 720;
     constant v_res : natural := 480;
+    -- 270000 @ 27 MHz = 10 ms
+    constant enc_period : natural := 270000;
+    constant enc_width : natural := 10;
 
 	signal s_clk_27 : std_logic;
 	signal s_rst_n : std_logic;	-- holds reset as long as pll is not locked
 
 	signal s_x_counter : natural range 0 to (h_res - 1);
 	signal s_y_counter : natural range 0 to (v_res - 1);
+
+	signal s_x_pixel : std_logic_vector(enc_width-1 downto 0);
+	signal s_y_pixel : std_logic_vector(enc_width-1 downto 0);
 begin
 	o_leds <= (others => '0');
 	o_de10_leds <= (others => '0');
@@ -112,7 +132,7 @@ begin
 			HDMI_TX_INT => i_hdmi_tx_int
 	 );
 
-	-- Generates HDMI sync signals and pixel coordinates (480p)
+	-- HDMI controller
 	hdmi_controler0 : component hdmi_controler
 		generic map (
 			h_res => h_res,
@@ -132,10 +152,43 @@ begin
 
 	o_hdmi_tx_clk <= s_clk_27;
 
+	-- Left encoder -> horizontal
+	encoder_left : component encoder
+		generic map (
+			PERIOD_S_EN => enc_period,
+			WIDTH => enc_width
+		)
+		port map (
+			i_clk => s_clk_27,
+			i_rst_n => s_rst_n,
+			i_A => i_left_ch_a,
+			i_B => i_left_ch_b,
+			o_leds => s_x_pixel
+		);
+
+	-- Right encoder -> vertical
+	encoder_right : component encoder
+		generic map (
+			PERIOD_S_EN => enc_period,
+			WIDTH => enc_width
+		)
+		port map (
+			i_clk => s_clk_27,
+			i_rst_n => s_rst_n,
+			i_A => i_right_ch_a,
+			i_B => i_right_ch_b,
+			o_leds => s_y_pixel
+		);
+
 	-- Pixel colors
-	o_hdmi_tx_d(23 downto 16) <= std_logic_vector(to_unsigned(s_x_counter, 8));
-	o_hdmi_tx_d(15 downto 8) <= std_logic_vector(to_unsigned(s_y_counter, 8));
-	o_hdmi_tx_d(7 downto 0) <= (others => '0');
+	--o_hdmi_tx_d(23 downto 16) <= std_logic_vector(to_unsigned(s_x_counter, 8));
+	--o_hdmi_tx_d(15 downto 8) <= std_logic_vector(to_unsigned(s_y_counter, 8));
+	--o_hdmi_tx_d(7 downto 0) <= (others => '0');
 	--o_hdmi_tx_d(15 downto 8) <= (others => '0');
 	--o_hdmi_tx_d(7 downto 0) <= std_logic_vector(to_unsigned(s_y_counter, 8));
+
+	-- Pixel colors: white point with encoder
+	o_hdmi_tx_d <=
+		x"FFFFFF" when (to_integer(unsigned(s_x_pixel)) = s_x_counter and to_integer(unsigned(s_y_pixel)) = s_y_counter)
+	    else x"000000";
 end architecture rtl;

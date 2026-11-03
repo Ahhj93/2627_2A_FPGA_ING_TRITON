@@ -374,3 +374,60 @@ Les bits de la sortie HDMI sont organisés comme suit :
 * bits 23 à 16 : composante rouge
 * bits 15 à 8 : composante verte
 * bits 7 à 0 : composante bleue
+
+### Déplacement d'un pixel
+Cette étape consiste à afficher un seul pixel blanc sur fond noir, déplacé par les deux encodeurs :
+* l'encodeur gauche déplace le pixel à l'horizontale (coordonnée x) ;
+* l'encodeur droit déplace le pixel à la verticale (coordonnée y).
+
+#### Principe
+On réutilise le composant `encoder` de la partie précédente (copié dans `telecran/encoder.vhd` et ajouté au projet Quartus), instancié deux fois pour chaque encodeur. La valeur de chaque compteur donne directement la position du pixel.
+
+Les encoders modifient `s_x_pixel` et `s_y_pixel`, qui sont comparés à `s_x_counter` et `s_y_counter` pour déterminer la couleur du pixel à afficher.
+* blanc si `s_x_pixel = s_x_counter` et `s_y_pixel = s_y_counter` (`x"FFFFFF"`)
+* noir sinon (`x"000000"`)
+
+Les encodeurs sont cadencés par l'horloge HDMI à 27 MHz (`s_clk_27`) qui est différente de l'horloge à 50 MHz. Pour garder une période d'échantillonnage de 10 ms, `PERIOD_S_EN` est à 270000 (soit 10 ms).
+
+#### Implémentation en VHDL
+```vhdl
+    -- 270000 @ 27 MHz = 10 ms
+    constant enc_period : natural := 270000;
+    constant enc_width : natural := 10;
+
+	signal s_x_pixel : std_logic_vector(enc_width-1 downto 0);
+	signal s_y_pixel : std_logic_vector(enc_width-1 downto 0);
+begin
+	-- Left encoder: horizontal position of the pixel
+	encoder_left : component encoder
+		generic map (
+			PERIOD_S_EN => c_enc_period,
+			WIDTH => c_enc_width
+		)
+		port map (
+			i_clk => s_clk_27,
+			i_rst_n => s_rst_n,
+			i_A => i_left_ch_a,
+			i_B => i_left_ch_b,
+			o_leds => s_x_pixel
+		);
+
+	-- Right encoder: vertical position of the pixel
+	encoder_right : component encoder
+		generic map (
+			PERIOD_S_EN => c_enc_period,
+			WIDTH => c_enc_width
+		)
+		port map (
+			i_clk => s_clk_27,
+			i_rst_n => s_rst_n,
+			i_A => i_right_ch_a,
+			i_B => i_right_ch_b,
+			o_leds => s_y_pixel
+		);
+
+	-- Pixel colors: white point with encoder
+	o_hdmi_tx_d <=
+		x"FFFFFF" when (to_integer(unsigned(s_x_pixel)) = s_x_counter and to_integer(unsigned(s_y_pixel)) = s_y_counter)
+	    else x"000000";
+```
