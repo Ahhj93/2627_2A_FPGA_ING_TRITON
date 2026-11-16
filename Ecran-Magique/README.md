@@ -615,6 +615,8 @@ Nous avons donc deux modes d'écriture dans la RAM, selon l'état de la machine 
 | Effacement (`s_clearing = '1'`) | `s_clear_address` | `"0"` | `'1'` |
 | Dessin (`s_clearing = '0'`) | `s_cursor_address` | `"1"` | `s_cursor_valid` |
 
+![](img/eraser.gif)
+
 ##### Simulation
 Nous simulons le composant `eraser` dans le fichier `eraser_tb.vhd`. Pour que la simulation soit courte, nous utilisons une mémoire de 32 cases au lieu de 345 600.
 
