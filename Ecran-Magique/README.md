@@ -513,13 +513,6 @@ Il faut parcourir toutes les adresses de la RAM pour y écrire un zéro. Pour ce
 
 ![](img/eraser.png)
 
-Sur ce schéma :
-* le bouton `i_left_pb` passe par une bascule D qui l'échantillonne sur l'horloge, car c'est un signal extérieur non synchronisé avec le FPGA ;
-* le registre `r_clearing` mémorise l'état de la machine : 1 pendant l'effacement, 0 pendant le dessin ;
-* le compteur d'adresses fournit `s_clear_address`, de 0 à 345 599 (720 × 480 − 1) ;
-* le multiplexeur choisit qui écrit sur le port A de la RAM : l'effaceur quand `s_clearing = 1`, le stylet sinon ;
-* le port B est lu en permanence par le contrôleur HDMI pour afficher l'image.
-
 #### Machine à états
 La machine n'a que deux états, codés par le registre `r_clearing` :
 
@@ -613,7 +606,7 @@ s_ram_data_a <= "0" when s_clearing = '1' else "1";
 s_ram_we_a <= '1' when s_clearing = '1' else s_cursor_valid;
 ```
 
-Les entrées du port A de la RAM (`i_data_a`, `i_addr_a`, `i_we_a`) sont maintenant reliées à `s_ram_data_a`, `s_ram_addr_a` et `s_ram_we_a` à la place des signaux du stylet.
+Nous avons donc deux modes d'écriture dans la RAM, selon l'état de la machine à états. Le tableau suivant résume les signaux connectés au port A de la RAM :s
 
 | | `s_ram_addr_a` | `s_ram_data_a` | `s_ram_we_a` |
 |---|---|---|---|
