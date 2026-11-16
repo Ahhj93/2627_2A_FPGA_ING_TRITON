@@ -437,6 +437,8 @@ begin
 ### Mémorisation
 #### Qu'est ce qu'une mémoire *dual-port* ?
 Une mémoire "dual port" est une mémoire à laquelle on peut accéder  de deux manières indépendantes. Dans le projet, ce type de mémoire est utile pour faire des opérations simultanément pour écrire ou lire les données. Pour écrire les pixels dans la mémoire par les encodeurs et en même temps lire la mémoire pour récupérer l'état de chaque pixel et rafraîchir l'écran.
+ici, on a besoin d'une mémoire dual-port car l'écran (en 27MHz) ne fonctionne pas à la même fréquence que le reste des composants. 
+
 #### Schéma pour mémoiriser les pixels
 ![](img/mem_pixel.png)
 #### Implémentation en VHDL
