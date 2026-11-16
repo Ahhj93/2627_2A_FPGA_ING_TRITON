@@ -30,12 +30,12 @@ begin
     stim_proc : process
     begin
         rst_n <= '0';
-        wait for 5 * CLK_PERIOD;
+        wait for CLK_PERIOD;
         rst_n <= '1';
         wait for 50 * CLK_PERIOD;
 
         pb_n <= '0';
-        wait for 4 * CLK_PERIOD;
+        wait for CLK_PERIOD;
         pb_n <= '1';
         wait for 50 * CLK_PERIOD;
 

@@ -248,7 +248,7 @@ end architecture tb;
 
 Dans le simulateur, nous faisons en sorte d'afficher tous les signaux d'entrée et de sortie du composant `encoder`. Nous pouvons ainsi vérifier que le compteur s'incrémente et se décrémente correctement en fonction des rotations de l'encodeur.
 
-```vhdl
+```tcl
 quit -sim
 
 vlib work
@@ -520,8 +520,8 @@ La machine n'a que deux états, codés par le registre `r_clearing` :
 
 | État | `r_clearing` | Ce qui se passe | Transition |
 |---|---|---|---|
-| Dessin | 0 | Le stylet écrit des 1 dans la RAM | Appui sur le bouton (`r_pb = 0`) → Effacement |
-| Effacement | 1 | Le compteur avance de 1 à chaque cycle et écrit des 0 | `r_address = mem_size - 1` → Dessin |
+| Dessin | 0 | Le stylet écrit des 1 dans la RAM | Appui sur le bouton (`r_pb = 0`) = Effacement |
+| Effacement | 1 | Le compteur avance de 1 à chaque cycle et écrit des 0 | `r_address = mem_size - 1` = Dessin |
 
 Après un reset, la machine démarre dans l'état Effacement : l'écran est donc effacé à chaque démarrage. Un effacement complet dure 345 600 cycles, soit environ 12,8 ms à 27 MHz, ce qui est invisible à l'œil.
 
@@ -608,7 +608,7 @@ s_ram_data_a <= "0" when s_clearing = '1' else "1";
 s_ram_we_a <= '1' when s_clearing = '1' else s_cursor_valid;
 ```
 
-Nous avons donc deux modes d'écriture dans la RAM, selon l'état de la machine à états. Le tableau suivant résume les signaux connectés au port A de la RAM :s
+Nous avons donc deux modes d'écriture dans la RAM, selon l'état de la machine à états. Le tableau suivant résume les signaux connectés au port A de la RAM :
 
 | | `s_ram_addr_a` | `s_ram_data_a` | `s_ram_we_a` |
 |---|---|---|---|
@@ -617,6 +617,12 @@ Nous avons donc deux modes d'écriture dans la RAM, selon l'état de la machine 
 
 ##### Simulation
 Nous simulons le composant `eraser` dans le fichier `eraser_tb.vhd`. Pour que la simulation soit courte, nous utilisons une mémoire de 32 cases au lieu de 345 600.
+
+Le testbench fait les étapes suivantes :
+1. Reset
+2. Attente de 50 cycles. Le premier effacement a le temps de finir.
+3. Appui sur le bouton
+4. Attente de 50 cycles. Le deuxième effacement a le temps de finir.
 
 ```vhdl
 library ieee;
@@ -651,12 +657,12 @@ begin
     stim_proc : process
     begin
         rst_n <= '0';
-        wait for 5 * CLK_PERIOD;
+        wait for CLK_PERIOD;
         rst_n <= '1';
         wait for 50 * CLK_PERIOD;
 
         pb_n <= '0';
-        wait for 4 * CLK_PERIOD;
+        wait for CLK_PERIOD;
         pb_n <= '1';
         wait for 50 * CLK_PERIOD;
 
@@ -710,3 +716,7 @@ add wave -radix unsigned uut/o_address
 run -all
 wave zoom full
 ```
+
+![](img/eraser_tb.png)
+
+Nous voyons qu'après le reset `r_clearing` vaut 1 et que l'adresse compte de 0 à 31 : l'écran est donc effacé au démarrage. Lorsque l'adresse atteint 31, `r_clearing` repasse à 0, l'adresse revient à 0 et ne bouge plus. Quand nous appuyons sur le bouton, `r_pb` recopie `i_pb_n` avec un cycle de retard, puis `r_clearing` repasse à 1 et l'adresse recompte de 0 à 31. Enfin, même si le bouton est relâché pendant ce temps, l'effacement continue jusqu'à la dernière adresse.
