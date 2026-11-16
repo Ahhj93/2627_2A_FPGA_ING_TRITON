@@ -254,7 +254,7 @@ begin
 			o_address => s_clear_address
 		);
 
-	-- Port A of the framebuffer: the eraser has priority over the pen
+	-- Eraser has priority over the pen
 	s_ram_addr_a <= s_clear_address when s_clearing = '1' else s_cursor_address;
 	s_ram_data_a <= "0" when s_clearing = '1' else "1";
 	s_ram_we_a <= '1' when s_clearing = '1' else s_cursor_valid;

@@ -509,6 +509,209 @@ o_hdmi_tx_d <= x"FFFFFF" when s_ram_q_b(0) = '1' else x"000000";
 ![](img/framebuffer.gif)
 
 ### Effacement
-Il faut parcourir toutes les adresses de la RAM pour y écrire un zéro. Pour cela nous utilisons un compteur qui va de 0 à l'adresse finale. nous utilisons le signal `i_left_pb` pour déclencher l'effacement. Pour cela nous utilisons une machine à état. Quand le signal est à 0, nous mettons la machine à l'état d'effacement et nous initialisons le compteur à 0 et nous commençons à écrire des zéros dans la RAM. Quand le compteur atteint la valeur maximale, nous arrêtons l'effacement et nous peut recommencer à dessiner en remettant le signal `o_clearing` à 0.
+Il faut parcourir toutes les adresses de la RAM pour y écrire un zéro. Pour cela nous utilisons un compteur qui va de 0 à l'adresse finale. Nous utilisons le signal `i_left_pb` pour déclencher l'effacement. Pour cela nous utilisons une machine à états. Quand le signal est à 0, nous mettons la machine dans l'état d'effacement, nous initialisons le compteur à 0 et nous commençons à écrire des zéros dans la RAM. Quand le compteur atteint la valeur maximale, nous arrêtons l'effacement et nous pouvons recommencer à dessiner en remettant le signal `o_clearing` à 0.
 
 ![](img/eraser.png)
+
+Sur ce schéma :
+* le bouton `i_left_pb` passe par une bascule D qui l'échantillonne sur l'horloge, car c'est un signal extérieur non synchronisé avec le FPGA ;
+* le registre `r_clearing` mémorise l'état de la machine : 1 pendant l'effacement, 0 pendant le dessin ;
+* le compteur d'adresses fournit `s_clear_address`, de 0 à 345 599 (720 × 480 − 1) ;
+* le multiplexeur choisit qui écrit sur le port A de la RAM : l'effaceur quand `s_clearing = 1`, le stylet sinon ;
+* le port B est lu en permanence par le contrôleur HDMI pour afficher l'image.
+
+#### Machine à états
+La machine n'a que deux états, codés par le registre `r_clearing` :
+
+| État | `r_clearing` | Ce qui se passe | Transition |
+|---|---|---|---|
+| Dessin | 0 | Le stylet écrit des 1 dans la RAM | Appui sur le bouton (`r_pb = 0`) → Effacement |
+| Effacement | 1 | Le compteur avance de 1 à chaque cycle et écrit des 0 | `r_address = mem_size - 1` → Dessin |
+
+Après un reset, la machine démarre dans l'état Effacement : l'écran est donc effacé à chaque démarrage. Un effacement complet dure 345 600 cycles, soit environ 12,8 ms à 27 MHz, ce qui est invisible à l'œil.
+
+#### Implémentation en VHDL
+Nous créons le composant `eraser` dans le fichier `eraser.vhd`. La taille de la mémoire est passée en `generic` pour pouvoir simuler avec une petite mémoire.
+
+```vhdl
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity eraser is
+    generic (
+        mem_size : positive := 720 * 480
+    );
+    port (
+        i_clk      : in std_logic;
+        i_rst_n    : in std_logic;
+        i_pb_n     : in std_logic;
+        o_clearing : out std_logic;
+        o_address  : out natural range 0 to mem_size - 1
+    );
+end entity eraser;
+
+architecture rtl of eraser is
+    signal r_pb : std_logic := '1';
+
+    signal r_clearing : std_logic := '1';
+    signal r_address  : natural range 0 to mem_size - 1 := 0;
+begin
+    push : process(i_clk, i_rst_n)
+    begin
+        if (i_rst_n = '0') then
+            r_pb <= '1';
+        elsif rising_edge(i_clk) then
+            r_pb <= i_pb_n;
+        end if;
+    end process push;
+
+    -- Address counter
+    counter : process(i_clk, i_rst_n)
+    begin
+        if (i_rst_n = '0') then
+            r_clearing <= '1';
+            r_address  <= 0;
+        elsif rising_edge(i_clk) then
+            if (r_clearing = '1') then
+                if (r_address = mem_size - 1) then
+                    r_clearing <= '0';
+                    r_address  <= 0;
+                else
+                    r_address <= r_address + 1;
+                end if;
+            elsif (r_pb = '0') then
+                r_clearing <= '1';
+            end if;
+        end if;
+    end process counter;
+
+    o_clearing <= r_clearing;
+    o_address  <= r_address;
+end architecture rtl;
+```
+
+Le process `push` contient la bascule D du bouton. Le process `counter` contient la machine à états et le compteur d'adresses.
+
+Nous instancions ensuite le composant dans `telecran.vhd` et nous ajoutons le multiplexeur devant le port A de la RAM. L'effaceur est prioritaire sur le stylet :
+
+```vhdl
+eraser0 : component eraser
+    generic map (
+        mem_size => h_res * v_res
+    )
+    port map (
+        i_clk => s_clk_27,
+        i_rst_n => s_rst_n,
+        i_pb_n => i_left_pb,
+        o_clearing => s_clearing,
+        o_address => s_clear_address
+    );
+
+-- Port A of the framebuffer: the eraser has priority over the pen
+s_ram_addr_a <= s_clear_address when s_clearing = '1' else s_cursor_address;
+s_ram_data_a <= "0" when s_clearing = '1' else "1";
+s_ram_we_a <= '1' when s_clearing = '1' else s_cursor_valid;
+```
+
+Les entrées du port A de la RAM (`i_data_a`, `i_addr_a`, `i_we_a`) sont maintenant reliées à `s_ram_data_a`, `s_ram_addr_a` et `s_ram_we_a` à la place des signaux du stylet.
+
+| | `s_ram_addr_a` | `s_ram_data_a` | `s_ram_we_a` |
+|---|---|---|---|
+| Effacement (`s_clearing = '1'`) | `s_clear_address` | `"0"` | `'1'` |
+| Dessin (`s_clearing = '0'`) | `s_cursor_address` | `"1"` | `s_cursor_valid` |
+
+##### Simulation
+Nous simulons le composant `eraser` dans le fichier `eraser_tb.vhd`. Pour que la simulation soit courte, nous utilisons une mémoire de 32 cases au lieu de 345 600.
+
+```vhdl
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity eraser_tb is
+end entity eraser_tb;
+
+architecture tb of eraser_tb is
+    constant MEM_SIZE   : positive := 32;    -- small RAM for short simulation
+    constant CLK_PERIOD : time := 37 ns;     -- ~27 MHz
+
+    signal clk           : std_logic := '0';
+    signal rst_n         : std_logic := '0';
+    signal pb_n          : std_logic := '1';
+    signal clearing      : std_logic;
+    signal clear_address : natural range 0 to MEM_SIZE - 1;
+    signal ended         : boolean := false;
+begin
+    uut : entity work.eraser
+        generic map (
+            mem_size => MEM_SIZE
+        )
+        port map (
+            i_clk      => clk,
+            i_rst_n    => rst_n,
+            i_pb_n     => pb_n,
+            o_clearing => clearing,
+            o_address  => clear_address
+        );
+
+    stim_proc : process
+    begin
+        rst_n <= '0';
+        wait for 5 * CLK_PERIOD;
+        rst_n <= '1';
+        wait for 50 * CLK_PERIOD;
+
+        pb_n <= '0';
+        wait for 4 * CLK_PERIOD;
+        pb_n <= '1';
+        wait for 50 * CLK_PERIOD;
+
+        ended <= true;
+        wait;
+    end process stim_proc;
+
+    clk_process : process
+    begin
+        clk <= '0';
+        wait for (CLK_PERIOD / 2);
+        clk <= '1';
+        wait for (CLK_PERIOD / 2);
+        if (ended = true) then
+            wait;
+        end if;
+    end process clk_process;
+end architecture tb;
+```
+
+Nous utilisons le script `eraser.do` pour lancer la simulation dans ModelSim :
+
+```tcl
+quit -sim
+
+vlib work
+vmap work work
+
+vcom eraser.vhd
+vcom eraser_tb.vhd
+
+vsim work.eraser_tb
+
+# INPUTS
+add wave -divider inputs:
+add wave -color yellow uut/i_clk
+add wave -color yellow uut/i_rst_n
+add wave -color yellow uut/i_pb_n
+
+# ERASER
+add wave -divider eraser:
+add wave uut/r_pb
+add wave uut/r_clearing
+add wave -radix unsigned uut/r_address
+
+# OUTPUTS
+add wave -divider outputs:
+add wave uut/o_clearing
+add wave -radix unsigned uut/o_address
+
+run -all
+wave zoom full
+```
