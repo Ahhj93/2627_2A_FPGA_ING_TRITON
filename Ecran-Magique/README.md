@@ -438,7 +438,7 @@ begin
 #### Qu'est ce qu'une mémoire *dual-port* ?
 Une mémoire "dual port" est une mémoire à laquelle on peut accéder  de deux manières indépendantes. Dans le projet, ce type de mémoire est utile pour faire des opérations simultanément pour écrire ou lire les données. Pour écrire les pixels dans la mémoire par les encodeurs et en même temps lire la mémoire pour récupérer l'état de chaque pixel et rafraîchir l'écran.
 #### Schéma pour mémoiriser les pixels
-![](img/Schema_memoirisation_pixels.jpg)
+![](img/mem_pixel.png)
 #### Implémentation en VHDL
 ```vhdl
 component dpram
@@ -509,4 +509,6 @@ o_hdmi_tx_d <= x"FFFFFF" when s_ram_q_b(0) = '1' else x"000000";
 ![](img/framebuffer.gif)
 
 ### Effacement
-Comme Expliqué dans le TP le Il faut parcourir toutes les adresses de la RAM pour y écrire un zéro. Pour cela on utilise un compteur qui va de 0 à l'adresse finale. On utilise le signal de reset pour déclencher l'effacement. Quand le signal de reset est à 0, on initialise le compteur à 0 et on commence à écrire des zéros dans la RAM. Quand le compteur atteint la valeur maximale, on arrête l'effacement et on peut recommencer à dessiner.
+Il faut parcourir toutes les adresses de la RAM pour y écrire un zéro. Pour cela nous utilisons un compteur qui va de 0 à l'adresse finale. nous utilisons le signal `i_left_pb` pour déclencher l'effacement. Pour cela nous utilisons une machine à état. Quand le signal est à 0, nous mettons la machine à l'état d'effacement et nous initialisons le compteur à 0 et nous commençons à écrire des zéros dans la RAM. Quand le compteur atteint la valeur maximale, nous arrêtons l'effacement et nous peut recommencer à dessiner en remettant le signal `o_clearing` à 0.
+
+![](img/eraser.png)

@@ -117,6 +117,18 @@ architecture rtl of telecran is
 		);
 	end component;
 
+	component eraser
+		generic (
+			mem_size : positive := 720 * 480
+		);
+		port (
+			i_clk      : in std_logic;
+			i_rst_n    : in std_logic;
+			i_pb_n     : in std_logic;
+			o_clearing : out std_logic;
+			o_address  : out natural range 0 to mem_size - 1
+		);
+	end component;
 
 
     constant h_res : natural := 720;
@@ -137,6 +149,12 @@ architecture rtl of telecran is
 	signal s_cursor_address : natural range 0 to (h_res * v_res - 1);
 	signal s_cursor_valid : std_logic;
 	signal s_ram_q_b : std_logic_vector(0 downto 0);
+
+	signal s_clearing : std_logic;
+	signal s_clear_address : natural range 0 to (h_res * v_res - 1);
+	signal s_ram_addr_a : natural range 0 to (h_res * v_res - 1);
+	signal s_ram_data_a : std_logic_vector(0 downto 0);
+	signal s_ram_we_a : std_logic;
 begin
 	o_leds <= (others => '0');
 	o_de10_leds <= (others => '0');
@@ -223,6 +241,24 @@ begin
 			o_leds => s_y_pixel
 		);
 
+	-- Left encoder push button -> clears the screen
+	eraser0 : component eraser
+		generic map (
+			mem_size => h_res * v_res
+		)
+		port map (
+			i_clk => s_clk_27,
+			i_rst_n => s_rst_n,
+			i_pb_n => i_left_pb,
+			o_clearing => s_clearing,
+			o_address => s_clear_address
+		);
+
+	-- Port A of the framebuffer: the eraser has priority over the pen
+	s_ram_addr_a <= s_clear_address when s_clearing = '1' else s_cursor_address;
+	s_ram_data_a <= "0" when s_clearing = '1' else "1";
+	s_ram_we_a <= '1' when s_clearing = '1' else s_cursor_valid;
+
 	framebuffer : component dpram
 		generic map (
 			mem_size => h_res * v_res,
@@ -231,11 +267,11 @@ begin
 		port map (
 			i_clk_a => s_clk_27,
 			i_clk_b => s_clk_27,
-			i_data_a => "1",
+			i_data_a => s_ram_data_a,
 			i_data_b => "0",
-			i_addr_a => s_cursor_address,
+			i_addr_a => s_ram_addr_a,
 			i_addr_b => s_pixel_address,
-			i_we_a => s_cursor_valid,
+			i_we_a => s_ram_we_a,
 			i_we_b => '0',
 			o_q_a => open,
 			o_q_b => s_ram_q_b
