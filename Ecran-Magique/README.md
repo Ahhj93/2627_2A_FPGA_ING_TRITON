@@ -523,11 +523,10 @@ La machine n'a que deux états, codés par le registre `r_clearing` :
 | Dessin | 0 | Le stylet écrit des 1 dans la RAM | Appui sur le bouton (`r_pb = 0`) = Effacement |
 | Effacement | 1 | Le compteur avance de 1 à chaque cycle et écrit des 0 | `r_address = mem_size - 1` = Dessin |
 
-Après un reset, la machine démarre dans l'état Effacement : l'écran est donc effacé à chaque démarrage. Un effacement complet dure 345 600 cycles, soit environ 12,8 ms à 27 MHz, ce qui est invisible à l'œil.
+Après un reset, la machine démarre dans l'état Effacement : l'écran est donc effacé à chaque démarrage.
 
 #### Implémentation en VHDL
-Nous créons le composant `eraser` dans le fichier `eraser.vhd`. La taille de la mémoire est passée en `generic` pour pouvoir simuler avec une petite mémoire.
-
+Nous créons le composant `eraser` dans le fichier `eraser.vhd`.
 ```vhdl
 library ieee;
 use ieee.std_logic_1164.all;
@@ -585,7 +584,7 @@ begin
 end architecture rtl;
 ```
 
-Le process `push` contient la bascule D du bouton. Le process `counter` contient la machine à états et le compteur d'adresses.
+Le process `push` contient la bascule D du bouton.
 
 Nous instancions ensuite le composant dans `telecran.vhd` et nous ajoutons le multiplexeur devant le port A de la RAM. L'effaceur est prioritaire sur le stylet :
 
